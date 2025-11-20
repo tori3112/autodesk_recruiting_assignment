@@ -14,7 +14,6 @@ public:
     bool updateQuantity(const std::string itemID, int newQuantity);
 
     void display();
-
 private:
     std::vector<Item> objects;
 };

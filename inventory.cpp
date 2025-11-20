@@ -3,7 +3,11 @@
 #include <iostream>
 
 bool Inventory::addItem(const Item& newItem) {
-    // check if object's there, return false?
+    auto it = std::ranges::find_if(objects.begin(), objects.end(), [newItem](const auto& object) {return newItem.getItemID() == object.getItemID(); }  );
+    if (it == objects.end()) {
+        // can't add it if it's already there
+        return false;
+    }
     objects.emplace_back(newItem);
     return true;
 }
