@@ -1,6 +1,7 @@
 #include "electronics.h"
 #include "groceries.h"
 #include "inventory.h"
+#include <iostream>
 
 int main()
 {
@@ -13,13 +14,13 @@ int main()
     inventory.addItem(&g1);
     inventory.addItem(&e1);
 
-    inventory.display();
+    auto highest = inventory.findHighestPrice();
+    std::cout << "Highest price found!\n" << highest->printInfo();
 
-    inventory.removeItem("3");
-    inventory.display();
-
-    inventory.updateQuantity("1", 21);
-    inventory.display();
-
+    auto below3 = inventory.findItemsBelowThreshold(3.0);
+    std::cout << "Below threshold: 3.0" << std::endl;
+    for (auto obj : below3) {
+        std::cout << obj->printInfo();
+    }
     return 0;
 }

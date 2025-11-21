@@ -17,6 +17,9 @@ public:
 
     void readFile(const std::string filename);
     void saveToFile(std::string filename);
+
+    Item* findHighestPrice();
+    std::vector<Item*> findItemsBelowThreshold(double threshold);
 private:
     std::vector<Item*> objects;
 };

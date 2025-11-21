@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 Inventory::Inventory() {}
 
@@ -90,3 +91,21 @@ void Inventory::saveToFile(std::string filename) {
 
     file.close();
 }
+
+Item* Inventory::findHighestPrice() {
+    std::sort(objects.begin(), objects.end(), [] (auto a, auto b) {
+        return a->getPrice() > b->getPrice();
+    } );
+    return objects[0];
+}
+
+std::vector<Item*> Inventory::findItemsBelowThreshold(double threshold) {
+    std::vector<Item*> belowThreshold;
+    for (const auto& object : objects) {
+        if (object->getPrice() < threshold) {
+            belowThreshold.push_back(object);
+        }
+    }
+    return belowThreshold;
+}
+
