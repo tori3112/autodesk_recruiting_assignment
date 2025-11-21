@@ -1,0 +1,4 @@
+1,peony,10,2.5
+2,rose,55,3.2
+3,marigold,7,3.5
+4,orchid,3,12.5

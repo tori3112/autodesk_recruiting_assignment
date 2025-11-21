@@ -7,13 +7,16 @@
 class Inventory
 {
 public:
-    Inventory() = default;
+    Inventory();
 
-    bool addItem(const Item& newItem);
-    bool removeItem(const std::string itemID);
-    bool updateQuantity(const std::string itemID, int newQuantity);
+    void addItem(const Item& newItem);
+    void removeItem(const std::string itemID);
+    void updateQuantity(const std::string itemID, int newQuantity);
 
     void display();
+
+    void readFile(const std::string filename);
+    void saveToFile(std::string filename);
 private:
     std::vector<Item> objects;
 };
