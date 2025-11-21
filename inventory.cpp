@@ -34,10 +34,7 @@ void Inventory::updateQuantity(const std::string itemID, int newQuantity) {
 
 void Inventory::display() {
     for (const auto object : objects) {
-        std::cout << "Item ID: " << object->getItemID()
-                  << ", Name: " << object->getName()
-                  << ", Quantity: " << object->getQuantity()
-                  << ", Price: " << object->getPrice() << std:: endl;
+        std::cout << object->printInfo();
     }
     std::cout << "DONE-----printed " << objects.size() << " objects in the inventory" << std::endl;
 }
@@ -84,10 +81,11 @@ void Inventory::saveToFile(std::string filename) {
     }
 
     for (auto const& object : objects) {
-        file << "Item ID: " << object->getItemID()
-             << ", Name: " << object->getName()
-             << ", Quantity: " << object->getQuantity()
-             << ", Price: " << object->getPrice() << "\n";
+        // file << "Item ID: " << object->getItemID()
+        //      << ", Name: " << object->getName()
+        //      << ", Quantity: " << object->getQuantity()
+        //      << ", Price: " << object->getPrice() << "\n";
+        file << object->printInfo();
     }
 
     file.close();

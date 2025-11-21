@@ -1,4 +1,6 @@
 #include "item.h"
+#include <iostream>
+#include <ostream>
 
 int Item::ID = 0;
 
@@ -21,3 +23,11 @@ void Item::setQuantity(int newQuantity) {
 void Item::setPrice(double newPrice) {
     price = newPrice;
 }
+
+std::string Item::printInfo() const {
+    return "Item ID: " + this->getItemID()
+        + ", Name: " + this->getName()
+        + ", Quantity: " + std::to_string(this->getQuantity())
+        + ", Price: " + std::to_string(this->getPrice()) + "\n";
+}
+

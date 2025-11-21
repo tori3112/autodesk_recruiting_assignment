@@ -11,6 +11,8 @@ public:
 
     int getWarrantyPeriod() const { return warrantyPeriod; };
     void setWarrantyPeriod(int newWarrantyPeriod);
+
+    std::string printInfo() const override;
 private:
     int warrantyPeriod;
 };

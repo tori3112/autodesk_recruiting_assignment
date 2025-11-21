@@ -24,6 +24,8 @@ public:
     double getPrice() const { return price; };
     void setPrice(double newPrice);
 
+    virtual std::string printInfo() const;
+
 private:
     std::string itemID;
     std::string name;

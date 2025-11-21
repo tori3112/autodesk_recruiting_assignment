@@ -11,6 +11,8 @@ public:
 
     std::string getOrigin() const { return origin; };
     void setOrigin(std::string newOrigin);
+
+    std::string printInfo() const override;
 private:
     std::string origin;
 };
