@@ -93,10 +93,12 @@ void Inventory::saveToFile(std::string filename) {
 }
 
 Item* Inventory::findHighestPrice() {
-    std::sort(objects.begin(), objects.end(), [] (auto a, auto b) {
-        return a->getPrice() > b->getPrice();
-    } );
-    return objects[0];
+    if (objects.empty()) return nullptr;
+
+    auto it = std::ranges::max_element(objects, {}, [](Item* i) {
+        return i->getPrice();
+    });
+    return it != objects.end() ? *it : nullptr;
 }
 
 std::vector<Item*> Inventory::findItemsBelowThreshold(double threshold) {
