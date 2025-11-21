@@ -71,3 +71,21 @@ void Inventory::readFile(std::string filename) {
     file.close();
 
 }
+
+void Inventory::saveToFile(std::string filename) {
+    std::ofstream file(filename);
+
+    if (!file.is_open()) {
+        std::cerr << "Couldn't make a file: " << filename << std::endl;
+        return;
+    }
+
+    for (auto const& object : objects) {
+        file << "Item ID: " << object.getItemID()
+             << ", Name: " << object.getName()
+             << ", Quantity: " << object.getQuantity()
+             << ", Price: " << object.getPrice() << "\n";
+    }
+
+    file.close();
+}

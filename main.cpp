@@ -25,5 +25,7 @@ int main()
 
     inventory.readFile("flower_list.txt");
     inventory.display();
+
+    inventory.saveToFile("inventory_status.txt");
     return 0;
 }

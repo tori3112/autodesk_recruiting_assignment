@@ -1,0 +1,4 @@
+Item ID: 1, Name: peony, Quantity: 10, Price: 2.5
+Item ID: 2, Name: rose, Quantity: 55, Price: 3.2
+Item ID: 3, Name: marigold, Quantity: 7, Price: 3.5
+Item ID: 4, Name: orchid, Quantity: 3, Price: 12.5
