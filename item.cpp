@@ -1,6 +1,4 @@
 #include "item.h"
-#include <iostream>
-#include <ostream>
 
 int Item::ID = 0;
 

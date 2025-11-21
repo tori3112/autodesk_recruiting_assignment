@@ -1,6 +1,7 @@
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
+#include <memory>
 #include <vector>
 #include "item.h"
 
@@ -9,7 +10,7 @@ class Inventory
 public:
     Inventory();
 
-    void addItem(Item* newItem);
+    void addItem(const Item& newItem);
     void removeItem(const std::string itemID);
     void updateQuantity(const std::string itemID, int newQuantity);
 
@@ -18,10 +19,10 @@ public:
     void readFile(const std::string filename);
     void saveToFile(std::string filename);
 
-    Item* findHighestPrice();
-    std::vector<Item*> findItemsBelowThreshold(double threshold);
+    std::shared_ptr<Item> findHighestPrice();
+    std::vector<std::shared_ptr<Item>> findItemsBelowThreshold(double threshold);
 private:
-    std::vector<Item*> objects;
+    std::vector<std::shared_ptr<Item>> objects;
 };
 
 #endif // INVENTORY_H
