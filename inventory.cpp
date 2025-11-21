@@ -7,26 +7,26 @@
 
 Inventory::Inventory() {}
 
-void Inventory::addItem(const Item& newItem) {
-    auto it = std::ranges::find_if(objects.begin(), objects.end(), [newItem](const auto& object) {return newItem.getItemID() == object.getItemID(); }  );
+void Inventory::addItem(Item* newItem) {
+    auto it = std::ranges::find_if(objects.begin(), objects.end(), [newItem](const auto& object) {return newItem->getItemID() == object->getItemID(); }  );
     if (it != objects.end()) {
-        std::cout << "Item: " << newItem.getName()
+        std::cout << "Item: " << newItem->getName()
                   <<" already in the inventory." << std::endl;
         return;
     }
     objects.emplace_back(newItem);
-    std::cout << "Added: " << newItem.getName()
+    std::cout << "Added: " << newItem->getName()
               << ", total now: " << objects.size() << std::endl;
 }
 
 void Inventory::removeItem(const std::string itemID) {
-    std::erase_if(objects, [&](auto object) {return object.getItemID() == itemID;});
+    std::erase_if(objects, [&](auto object) {return object->getItemID() == itemID;});
 }
 
 void Inventory::updateQuantity(const std::string itemID, int newQuantity) {
-    auto it = std::ranges::find_if(objects.begin(), objects.end(), [itemID](const auto& object) {return object.getItemID() == itemID; });
+    auto it = std::ranges::find_if(objects.begin(), objects.end(), [itemID](const auto& object) {return object->getItemID() == itemID; });
     if (it != objects.end()) {
-        it->setQuantity(newQuantity);
+        (*it)->setQuantity(newQuantity);
         return;
     }
     std::cout << "Item with ID " << itemID << " not in the inventory." << std::endl;
@@ -34,7 +34,10 @@ void Inventory::updateQuantity(const std::string itemID, int newQuantity) {
 
 void Inventory::display() {
     for (const auto object : objects) {
-        std::cout << "Item ID: " << object.getItemID() << ", Name: " << object.getName() << ", Quantity: " << object.getQuantity() << ", Price: " << object.getPrice() << std:: endl;
+        std::cout << "Item ID: " << object->getItemID()
+                  << ", Name: " << object->getName()
+                  << ", Quantity: " << object->getQuantity()
+                  << ", Price: " << object->getPrice() << std:: endl;
     }
     std::cout << "DONE-----printed " << objects.size() << " objects in the inventory" << std::endl;
 }
@@ -65,7 +68,7 @@ void Inventory::readFile(std::string filename) {
 
         Item item(name, quantity, price);
 
-        this->addItem(item);
+        this->addItem(&item);
         display();
     }
     file.close();
@@ -81,10 +84,10 @@ void Inventory::saveToFile(std::string filename) {
     }
 
     for (auto const& object : objects) {
-        file << "Item ID: " << object.getItemID()
-             << ", Name: " << object.getName()
-             << ", Quantity: " << object.getQuantity()
-             << ", Price: " << object.getPrice() << "\n";
+        file << "Item ID: " << object->getItemID()
+             << ", Name: " << object->getName()
+             << ", Quantity: " << object->getQuantity()
+             << ", Price: " << object->getPrice() << "\n";
     }
 
     file.close();

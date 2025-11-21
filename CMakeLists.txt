@@ -9,7 +9,9 @@ add_executable(autodesk_recruiting_assignment main.cpp
     item.cpp
     item.h
     inventory.h inventory.cpp
-    flower_list.txt)
+    flower_list.txt
+    electronics.h electronics.cpp
+    groceries.h groceries.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS autodesk_recruiting_assignment

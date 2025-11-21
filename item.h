@@ -1,10 +1,13 @@
+#ifndef ITEM_H
+#define ITEM_H
+
 #include <string>
 
 class Item {
 public:
     // TODO: move semantics?
     // Item() = default;
-    // ~Item() = default;
+    virtual ~Item() {};
     // other constructors as needed
     Item(std::string newName, int newQuantity, double newPrice);
     Item(std::string newName, double newPrice);
@@ -30,3 +33,5 @@ private:
 protected:
     static int ID;
 };
+
+#endif

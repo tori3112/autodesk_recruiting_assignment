@@ -1,31 +1,25 @@
-
+#include "electronics.h"
+#include "groceries.h"
 #include "inventory.h"
 
 int main()
 {
-    // std::cout << "Creating items..." << std::endl;
+    Item i1("flowers", 20, 2.5);
+    Groceries g1("apples", 3, 1.5, "Poland");
+    Electronics e1("Laptop", 2, 699.90, 24);
 
-    // auto i1 = new Item("peony", 2.5);
-    // auto i2 = new Item("carnation", 10, 3.5);
-    // auto i3 = new Item("daffodil", 3, 1.5);
-
-    // std::cout << "Creating the inventory..." << std::endl;
     Inventory inventory;
-    // inventory->addItem(*i1);
-    // inventory->addItem(*i2);
-    // inventory->addItem(*i3);
+    inventory.addItem(&i1);
+    inventory.addItem(&g1);
+    inventory.addItem(&e1);
 
-    // inventory->display();
-
-    // inventory->removeItem("2");
-    // inventory->display();
-
-    // inventory->updateQuantity("1", 12);
-    // inventory->display();
-
-    inventory.readFile("flower_list.txt");
     inventory.display();
 
-    inventory.saveToFile("inventory_status.txt");
+    inventory.removeItem("3");
+    inventory.display();
+
+    inventory.updateQuantity("1", 21);
+    inventory.display();
+
     return 0;
 }
