@@ -36,7 +36,10 @@ int main()
         if (cmd == "exit") break;
 
         auto command = createCommand(cmd, inventory, line);
-        if (!command) continue;
+        if (!command) {
+            std::cout << "Unrecognised command: " << cmd << std::endl;
+            continue;
+        }
         command->execute();
     }
 

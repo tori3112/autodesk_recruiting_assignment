@@ -62,11 +62,9 @@ void Inventory::readFile(const std::string& filename) {
 
     std::string line;
     while (std::getline(file, line)) {
-        // std::cout << line << std::endl;
         std::stringstream ss(line);
         std::string idStr, nameStr, quantityStr, priceStr;
 
-        // TODO: check if this is better for fixed indices
         std::getline(ss, idStr, ',');
         std::getline(ss, nameStr, ',');
         std::getline(ss, quantityStr, ',');

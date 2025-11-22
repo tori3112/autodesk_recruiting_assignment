@@ -5,10 +5,8 @@
 
 class Item {
 public:
-    // TODO: move semantics?
     // Item() = default;
     virtual ~Item() {};
-    // other constructors as needed
     Item(std::string newName, int newQuantity, double newPrice);
     Item(std::string newName, double newPrice);
 
