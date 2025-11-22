@@ -1,11 +1,11 @@
+#include "command.h"
 #include "inventory.h"
 #include <iostream>
 #include <sstream>
 #include <cctype>
 
-bool canBeInteger(std::string& str);
-bool canBeDouble(std::string& str);
 void printHelp();
+std::unique_ptr<Command> createCommand(const std::string name, Inventory& inventory, std::vector<std::string>& args);
 
 int main()
 {
@@ -32,126 +32,42 @@ int main()
             line.push_back(word);
         }
 
+        auto cmd = line[0];
+        if (cmd == "exit") break;
 
-        if (line[0] == "help") {
-            printHelp();
-        } else if (line[0] == "add") {
-            if (line.size() == 3) {
-                // add <item name> <item price>
-                auto name = line[1];                // expect std::string
-                auto price = line[2];               // expect double
-
-                if (canBeDouble(price)) {
-                    auto item = std::make_shared<Item>(name, std::stod(price));
-                    inventory.addItem(item);
-                } else {
-                    std::cout << "Given price in unrecognised standard: " << price << std::endl;
-                }
-
-            } else if (line.size() == 4) {
-                // add <item name> <item quantity> <item price>
-                auto name = line[1];                // expect std::string
-                auto quantity = line[2]; // expect int
-                auto price = line[3];    // expect double
-
-                if (canBeInteger(quantity)) {
-                    if (canBeDouble(price)) {
-                        auto item = std::make_shared<Item>(name, std::stoi(quantity), std::stod(price));
-                        inventory.addItem(item);
-                    } else {
-                        std::cout << "Given price in unrecognised standard: " << price << std::endl;
-                    }
-                } else {
-                    std::cout << "Given quantity in unrecognised standard: " << price << std::endl;
-                }
-            } else {
-                std::cout << "Wrong number of arguments." << std::endl;
-            }
-        } else if (line[0] == "remove") {
-            if (line.size() != 2) {
-                std::cout << "Wrong number of arguments." << std::endl;
-            } else {
-                auto id = line[1];
-                inventory.removeItem(id);
-            }
-        } else if (line[0] == "display") {
-            inventory.display();
-        } else if (line[0] == "read") {
-            if (line.size() != 2) {
-                std::cout << "Please specify target file." << std::endl;
-            } else {
-                auto filename = line[1];
-                inventory.readFile(filename);
-            }
-        } else if (line[0] == "save") {
-            if (line.size() != 2) {
-                std::cout << "Please specify target file." << std::endl;
-            } else {
-                auto filename = line[1];
-                inventory.saveToFile(filename);
-            }
-        } else if (line[0] == "highest") {
-            auto highest = inventory.findHighestPrice();
-            std::cout << "Found highest price item: " << highest->getInfo();
-        } else if (line[0] == "below") {
-            if (line.size() != 2) {
-                std::cout << "Wrong number of arguments." << std::endl;
-            } else {
-                auto threshold = line[1];
-                if (canBeDouble(threshold)) {
-                    auto items = inventory.findItemsBelowThreshold(std::stod(threshold));
-                    std::cout << "Found " << items.size() << " items below " << threshold << std::endl;
-                    for (const auto& item : items) {
-                        std::cout << item->getInfo();
-                    }
-                    std::cout << "DONE." << std::endl;
-                } else {
-                    std::cout << "Unnexpected threshold value: " << threshold << std::endl;
-                }
-            }
-        } else if (line[0] == "exit") {
-            break;
-        }
+        auto command = createCommand(cmd, inventory, line);
+        if (!command) continue;
+        command->execute();
     }
 
     return 0;
 }
 
-bool canBeInteger(std::string& str) {
-    std::string numbers = "1234567890";
-    for (const auto& ch : str) {
-        if (numbers.find(ch) == std::string::npos) {
-            return false;
-        }
-    }
-    return true;
-}
+std::unique_ptr<Command> createCommand(const std::string name, Inventory& inventory, std::vector<std::string>& args) {
+    if (name == "add") return std::make_unique<AddCommand>(inventory, args);
+    if (name == "remove") return std::make_unique<RemoveCommand>(inventory, args);
+    if (name == "update") return std::make_unique<UpdateCommand>(inventory, args);
+    if (name == "display") return std::make_unique<DisplayCommand>(inventory, args);
+    if (name == "read") return std::make_unique<ReadCommand>(inventory, args);
+    if (name == "save") return std::make_unique<SaveCommand>(inventory, args);
+    if (name == "highest") return std::make_unique<HighestCommand>(inventory, args);
+    if (name == "below") return std::make_unique<BelowCommand>(inventory, args);
 
-bool canBeDouble(std::string& str) {
-    int decimal = 0;
-    for (auto c : str) {
-        if (!std::isdigit(c)) {
-            if (c == '.') {
-                decimal++;
-                if (decimal > 1) return false;
-            } else {
-                return false;
-            }
-        }
-    }
-    return true;
+    if (name == "help") printHelp();
+
+    return nullptr;
 }
 
 void printHelp() {
     std::cout << "Commands:\n"
-              << " add <name> <quantity> <price>\t - add an item with name, quantity, price,\n"
-              << " add <name> <price>\t\t - add an item with name, price and quantity 0\n"
+              << " add <name> <quantity> <price> \t - add an item with name, quantity, price,\n"
+              << " add <name> <price> \t\t - add an item with name, price and quantity 0\n"
               << " remove <id> \t\t\t - removes an item by ID,\n"
               << " update <id> <quantity> \t - updates quantity of an item with id, \n"
-              << " display\t\t\t - shows all items in the invetory,\n"
+              << " display \t\t\t - shows all items in the invetory,\n"
               << " read <filename> \t\t - reads items from file,\n"
               << " save <filename> \t\t - saves current inventory to a file,\n"
-              << " highest\t\t\t - finds and shows an item with the highest price,\n"
+              << " highest \t\t\t - finds and shows an item with the highest price,\n"
               << " below <threshold> \t\t - finds and shows items below specific price,\n"
               << " exit \t\t\t\t - quits the program" << std::endl;
 }
