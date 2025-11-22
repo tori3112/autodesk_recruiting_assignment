@@ -3,43 +3,9 @@
 #include <sstream>
 #include <cctype>
 
-bool canBeInteger(std::string& str) {
-    std::string numbers = "1234567890";
-    for (const auto& ch : str) {
-        if (numbers.find(ch) == std::string::npos) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool canBeDouble(std::string& str) {
-    int decimal = 0;
-    for (auto c : str) {
-        if (!std::isdigit(c)) {
-            if (c == '.') {
-                decimal++;
-                if (decimal > 1) return false;
-            } else {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-void printHelp() { // TODO: improve commands instructions
-    std::cout << "Commands:\n"
-              << "\tadd\t\t - add an item,\n"
-              << "\tremove\t\t - removes an item by IT,\n"
-              << "\tupdate\t\t - updates quantity of an item, \n"
-              << "\tdisplay\t\t - shows all items in the invetory,\n"
-              << "\tread\t\t - reads items from file,\n"
-              << "\tsave\t\t - saves current inventory to a file,\n"
-              << "\thighest\t\t - finds and shows an item with the highest price,\n"
-              << "\tbelow\t\t - finds and shows items below specific price,\n"
-              << "\texit\t\t - quits the program" << std::endl;
-}
+bool canBeInteger(std::string& str);
+bool canBeDouble(std::string& str);
+void printHelp();
 
 int main()
 {
@@ -65,6 +31,7 @@ int main()
         while (std::getline(ss, word, ' ')) {
             line.push_back(word);
         }
+
 
         if (line[0] == "help") {
             printHelp();
@@ -127,7 +94,6 @@ int main()
             auto highest = inventory.findHighestPrice();
             std::cout << "Found highest price item: " << highest->getInfo();
         } else if (line[0] == "below") {
-            // TODO: what if user puts threshold as a non-numeric
             if (line.size() != 2) {
                 std::cout << "Wrong number of arguments." << std::endl;
             } else {
@@ -149,4 +115,43 @@ int main()
     }
 
     return 0;
+}
+
+bool canBeInteger(std::string& str) {
+    std::string numbers = "1234567890";
+    for (const auto& ch : str) {
+        if (numbers.find(ch) == std::string::npos) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool canBeDouble(std::string& str) {
+    int decimal = 0;
+    for (auto c : str) {
+        if (!std::isdigit(c)) {
+            if (c == '.') {
+                decimal++;
+                if (decimal > 1) return false;
+            } else {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void printHelp() {
+    std::cout << "Commands:\n"
+              << " add <name> <quantity> <price>\t - add an item with name, quantity, price,\n"
+              << " add <name> <price>\t\t - add an item with name, price and quantity 0\n"
+              << " remove <id> \t\t\t - removes an item by ID,\n"
+              << " update <id> <quantity> \t - updates quantity of an item with id, \n"
+              << " display\t\t\t - shows all items in the invetory,\n"
+              << " read <filename> \t\t - reads items from file,\n"
+              << " save <filename> \t\t - saves current inventory to a file,\n"
+              << " highest\t\t\t - finds and shows an item with the highest price,\n"
+              << " below <threshold> \t\t - finds and shows items below specific price,\n"
+              << " exit \t\t\t\t - quits the program" << std::endl;
 }
