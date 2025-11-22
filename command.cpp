@@ -16,7 +16,7 @@ void AddCommand::execute() const  {
             std::cout << "Given price in unrecognised standard: " << price << std::endl;
         }
     } else if (args.size() == 4) {
-        auto name = args[1];                // expect std::string
+        auto name = args[1];     // expect std::string
         auto quantity = args[2]; // expect int
         auto price = args[3];    // expect double
 
@@ -37,10 +37,10 @@ void AddCommand::execute() const  {
 
 void RemoveCommand::execute() const  {
     if (args.size() != 2) {
-        std::cout << "Please specify target file." << std::endl;
+        std::cout << "Wrong number of arguments." << std::endl;
     } else {
-        auto filename = args[1];
-        inventory.readFile(filename);
+        auto id = args[1];
+        inventory.removeItem(id);
     }
 }
 
