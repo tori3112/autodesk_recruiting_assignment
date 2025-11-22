@@ -4,7 +4,7 @@ Electronics::Electronics(std::string newName, int newQuantity, double newPrice, 
 
 Electronics::Electronics(std::string newName, double newPrice, int newWarranty): Item(newName, newPrice), warrantyPeriod(newWarranty){}
 
-std::string Electronics::printInfo() const {
+std::string Electronics::getInfo() const {
     return "Item ID: " + this->getItemID()
         + ", Name: " + this->getName()
         + ", Quantity: " + std::to_string(this->getQuantity())

@@ -10,7 +10,7 @@ class Inventory
 public:
     Inventory();
 
-    void addItem(const Item& newItem);
+    void addItem(std::shared_ptr<Item> newItem);
     void removeItem(const std::string& itemID);
     void updateQuantity(const std::string& itemID, int newQuantity);
 

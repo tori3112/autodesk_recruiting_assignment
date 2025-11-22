@@ -9,68 +9,75 @@
 
 Inventory::Inventory() {}
 
-void Inventory::addItem(const Item& newItem) {
-    auto it = std::ranges::find_if(objects.begin(), objects.end(), [&newItem](const auto& object) {
-        return newItem.getItemID() == object->getItemID(); // TODO: check if this is good approach
+void Inventory::addItem(std::shared_ptr<Item> newItem) {
+    auto it = std::ranges::find_if(objects, [&](const auto& object) {
+        return newItem->getItemID() == object->getItemID();
     }  );
+
     if (it != objects.end()) {
-        std::cout << "Item: " << newItem.getName()
+        std::cout << "Item: " << newItem->getName()
                   <<" already in the inventory." << std::endl;
         return;
     }
-    objects.emplace_back(std::make_shared<Item>(newItem)); // TODO: object slicing here
-    std::cout << "Added: " << newItem.getName()
+
+    objects.push_back(std::move(newItem));
+    std::cout << "Added: " << objects.back()->getName()
               << ", total now: " << objects.size() << std::endl;
 }
 
-void Inventory::removeItem(const std::string& itemID) {// TODO: still copies string, unnecessary
-    std::erase_if(objects, [&](auto object) {return object->getItemID() == itemID;});
+void Inventory::removeItem(const std::string& itemID) {
+    std::erase_if(objects, [&](const auto& object) {
+        return object->getItemID() == itemID;
+    });
 }
 
 void Inventory::updateQuantity(const std::string& itemID, int newQuantity) {
-    auto it = std::ranges::find_if(objects.begin(), objects.end(), [itemID](const auto& object) {return object->getItemID() == itemID; });
+    auto it = std::ranges::find_if(objects.begin(), objects.end(), [itemID](const auto& object) {
+        return object->getItemID() == itemID;
+    });
+
     if (it != objects.end()) {
         (*it)->setQuantity(newQuantity);
         return;
     }
+
     std::cout << "Item with ID " << itemID << " not in the inventory." << std::endl;
 }
 
 void Inventory::display() const {
     for (const auto object : objects) {
-        std::cout << object->printInfo();
+        std::cout << object->getInfo();
     }
-    std::cout << "DONE-----printed " << objects.size() << " objects in the inventory" << std::endl;
+    std::cout << "DONE-----printed " << objects.size() << " objects in the inventory." << std::endl;
 }
 
 
 void Inventory::readFile(const std::string& filename) {
     std::ifstream file(filename);
-    std::string line;
 
     if (!file.is_open()) {
         std::cerr << "Couldn't open a file: " << filename << std::endl;
         return;
     }
 
+    std::string line;
     while (std::getline(file, line)) {
         // std::cout << line << std::endl;
-        std::vector<std::string> row;
         std::stringstream ss(line);
-        std::string word;
+        std::string idStr, nameStr, quantityStr, priceStr;
 
-        while (std::getline(ss, word, ',')) {
-            row.push_back(word);
-        }
+        // TODO: check if this is better for fixed indices
+        std::getline(ss, idStr, ',');
+        std::getline(ss, nameStr, ',');
+        std::getline(ss, quantityStr, ',');
+        std::getline(ss, priceStr, ',');
 
-        auto name = row[1];
-        auto quantity = std::stoi(row[2]);
-        auto price = std::stod(row[3]);
-        // TODO: polymorphism
-        Item i(name, quantity, price);
+        int quantityInt = std::stoi(quantityStr);
+        double priceDou = std::stod(priceStr);
 
-        this->addItem(i);
-        display();
+        auto item = std::make_shared<Item>(nameStr, quantityInt, priceDou);
+        addItem(item);
+        // display();
     }
     file.close();
 
@@ -80,16 +87,12 @@ void Inventory::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
 
     if (!file.is_open()) {
-        std::cerr << "Couldn't make a file: " << filename << std::endl;
+        std::cerr << "Couldn't write file: " << filename << std::endl;
         return;
     }
 
     for (auto const& object : objects) {
-        // file << "Item ID: " << object->getItemID()
-        //      << ", Name: " << object->getName()
-        //      << ", Quantity: " << object->getQuantity()
-        //      << ", Price: " << object->getPrice() << "\n";
-        file << object->printInfo();
+        file << object->getInfo();
     }
 
     file.close();
@@ -98,15 +101,17 @@ void Inventory::saveToFile(const std::string& filename) const {
 std::shared_ptr<Item> Inventory::findHighestPrice() const {
     if (objects.empty()) return nullptr;
 
-    // TODO: this copies a shared_ptr for every comparison (increasing reference count)
-    auto it = std::ranges::max_element(objects, {}, [](std::shared_ptr<Item> i) {
+    auto it = std::ranges::max_element(objects, {}, [](const auto& i) {
         return i->getPrice();
     });
-    return it != objects.end() ? *it : nullptr;
+
+    return *it;
 }
 
 std::vector<std::shared_ptr<Item>> Inventory::findItemsBelowThreshold(double threshold) const {
     std::vector<std::shared_ptr<Item>> belowThreshold;
+    belowThreshold.reserve(objects.size());
+
     for (const auto& object : objects) {
         if (object->getPrice() < threshold) {
             belowThreshold.push_back(object);

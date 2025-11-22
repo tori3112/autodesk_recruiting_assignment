@@ -22,7 +22,7 @@ void Item::setPrice(double newPrice) {
     price = newPrice;
 }
 
-std::string Item::printInfo() const {
+std::string Item::getInfo() const {
     return "Item ID: " + this->getItemID()
         + ", Name: " + this->getName()
         + ", Quantity: " + std::to_string(this->getQuantity())
