@@ -10,8 +10,7 @@
 Inventory::Inventory() {}
 
 void Inventory::addItem(const Item& newItem) {
-    // TODO: could be more efficient, could capture by const reference
-    auto it = std::ranges::find_if(objects.begin(), objects.end(), [newItem](const auto& object) {
+    auto it = std::ranges::find_if(objects.begin(), objects.end(), [&newItem](const auto& object) {
         return newItem.getItemID() == object->getItemID(); // TODO: check if this is good approach
     }  );
     if (it != objects.end()) {
@@ -24,11 +23,11 @@ void Inventory::addItem(const Item& newItem) {
               << ", total now: " << objects.size() << std::endl;
 }
 
-void Inventory::removeItem(const std::string itemID) {// TODO: still copies string, unnecessary
+void Inventory::removeItem(const std::string& itemID) {// TODO: still copies string, unnecessary
     std::erase_if(objects, [&](auto object) {return object->getItemID() == itemID;});
 }
 
-void Inventory::updateQuantity(const std::string itemID, int newQuantity) {
+void Inventory::updateQuantity(const std::string& itemID, int newQuantity) {
     auto it = std::ranges::find_if(objects.begin(), objects.end(), [itemID](const auto& object) {return object->getItemID() == itemID; });
     if (it != objects.end()) {
         (*it)->setQuantity(newQuantity);
@@ -37,7 +36,7 @@ void Inventory::updateQuantity(const std::string itemID, int newQuantity) {
     std::cout << "Item with ID " << itemID << " not in the inventory." << std::endl;
 }
 
-void Inventory::display() {
+void Inventory::display() const {
     for (const auto object : objects) {
         std::cout << object->printInfo();
     }
@@ -45,7 +44,7 @@ void Inventory::display() {
 }
 
 
-void Inventory::readFile(std::string filename) {
+void Inventory::readFile(const std::string& filename) {
     std::ifstream file(filename);
     std::string line;
 
@@ -77,7 +76,7 @@ void Inventory::readFile(std::string filename) {
 
 }
 
-void Inventory::saveToFile(std::string filename) {
+void Inventory::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -96,7 +95,7 @@ void Inventory::saveToFile(std::string filename) {
     file.close();
 }
 
-std::shared_ptr<Item> Inventory::findHighestPrice() {
+std::shared_ptr<Item> Inventory::findHighestPrice() const {
     if (objects.empty()) return nullptr;
 
     // TODO: this copies a shared_ptr for every comparison (increasing reference count)
@@ -106,7 +105,7 @@ std::shared_ptr<Item> Inventory::findHighestPrice() {
     return it != objects.end() ? *it : nullptr;
 }
 
-std::vector<std::shared_ptr<Item>> Inventory::findItemsBelowThreshold(double threshold) {
+std::vector<std::shared_ptr<Item>> Inventory::findItemsBelowThreshold(double threshold) const {
     std::vector<std::shared_ptr<Item>> belowThreshold;
     for (const auto& object : objects) {
         if (object->getPrice() < threshold) {
