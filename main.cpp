@@ -34,6 +34,10 @@ int main()
 
         auto cmd = line[0];
         if (cmd == "exit") break;
+        if (cmd == "help") {
+            printHelp();
+            continue;
+        }
 
         auto command = createCommand(cmd, inventory, line);
         if (!command) {
@@ -55,8 +59,6 @@ std::unique_ptr<Command> createCommand(const std::string name, Inventory& invent
     if (name == "save") return std::make_unique<SaveCommand>(inventory, args);
     if (name == "highest") return std::make_unique<HighestCommand>(inventory, args);
     if (name == "below") return std::make_unique<BelowCommand>(inventory, args);
-
-    if (name == "help") printHelp();
 
     return nullptr;
 }
